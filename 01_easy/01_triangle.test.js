@@ -61,6 +61,17 @@ describe("Triangle", () => {
   });
 
   describe("invalid triangles", () => {
+    test("all sides must be a valid number", () => {
+      expect(() => new Triangle("1", 1, 1)).not.toThrow();
+      expect(() => new Triangle(1, "1", 1)).not.toThrow();
+      expect(() => new Triangle(1, 1, "1")).not.toThrow();
+
+      expect(() => new Triangle("string", 1, 1)).toThrow();
+      expect(() => new Triangle([], 1, 1)).toThrow();
+      expect(() => new Triangle({}, 1, 1)).toThrow();
+      expect(() => new Triangle(NaN, 1, 1)).toThrow();
+    });
+
     test("no side can be === 0", () => {
       expect(() => new Triangle(0, 0, 0)).toThrow();
       expect(() => new Triangle(0, 1, 1)).toThrow();

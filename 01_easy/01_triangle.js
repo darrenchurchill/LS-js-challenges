@@ -25,7 +25,9 @@ class Triangle {
    * @throws {TypeError} if the sides represent an invalid triangle
    */
   constructor(side1, side2, side3) {
-    this.sortedSides = [side1, side2, side3].sort((a, b) => a - b);
+    this.sortedSides = [side1, side2, side3]
+      .map((side) => Number(side))
+      .sort((a, b) => a - b);
     this.#throwIfInvalid();
   }
 
@@ -36,8 +38,8 @@ class Triangle {
    */
   #throwIfInvalid() {
     this.sortedSides.forEach((side) => {
-      if (typeof side !== "number") {
-        throw new TypeError(`${side} is not a number.`);
+      if (Number.isNaN(side)) {
+        throw new TypeError("All sides must be a valid number.");
       }
     });
 
