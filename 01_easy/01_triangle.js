@@ -10,6 +10,9 @@
 "use strict";
 
 class Triangle {
+  /** @type {Array.<number>} */
+  #sides;
+
   /**
    * Given 3 side lengths, create a new `Triangle` instance.
    *
@@ -25,10 +28,8 @@ class Triangle {
    * @throws {TypeError} if the sides represent an invalid triangle
    */
   constructor(side1, side2, side3) {
-    this.sortedSides = [side1, side2, side3]
-      .map((side) => Number(side))
-      .sort((a, b) => a - b);
-    this.#throwIfInvalid();
+    this.#throwIfInvalid(side1, side2, side3);
+    this.#sides = [side1, side2, side3].map((side) => Number(side));
   }
 
   /**
@@ -36,25 +37,24 @@ class Triangle {
    * for a definition of invalid sides.
    * @throws {TypeError} if this triangle's sides are invalid
    */
-  #throwIfInvalid() {
-    this.sortedSides.forEach((side) => {
-      if (Number.isNaN(side)) {
-        throw new TypeError("All sides must be a valid number.");
+  #throwIfInvalid(...sides) {
+    sides.forEach((side) => {
+      if (Number.isNaN(Number(side))) {
+        throw new TypeError(`${side} must be a valid number.`);
       }
     });
 
-    this.sortedSides.forEach((side) => {
+    sides.forEach((side) => {
       if (side <= 0) {
         throw new TypeError(`${side} must be > 0.`);
       }
     });
 
-    let longest = this.sortedSides[2];
-    let otherTwo = this.sortedSides.slice(0, 2);
-    let otherTwoSum = otherTwo.reduce((sum, side) => sum + side);
-
-    if (otherTwoSum <= longest) {
-      throw new TypeError(`${otherTwo} must sum to >= ${longest}.`);
+    if (
+      sides.reduce((sum, side) => sum + Number(side), 0) <=
+      2 * Math.max(...sides)
+    ) {
+      throw new TypeError(`Smallest 2 sides must sum to > longest side.`);
     }
   }
 
@@ -64,18 +64,11 @@ class Triangle {
    * representing this `Triangle`'s kind
    */
   kind() {
-    if (this.sortedSides.every((side) => side === this.sortedSides[2])) {
-      return "equilateral";
+    switch ((new Set(this.#sides)).size) {
+      case 1: return "equilateral";
+      case 2: return "isosceles";
+      default: return "scalene";
     }
-
-    if (
-      this.sortedSides[0] === this.sortedSides[1] ||
-      this.sortedSides[1] === this.sortedSides[2]
-    ) {
-      return "isosceles";
-    }
-
-    return "scalene";
   }
 }
 
