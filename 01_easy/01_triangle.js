@@ -55,6 +55,26 @@ class Triangle {
       throw new TypeError(`${otherTwo} must sum to >= ${longest}.`);
     }
   }
+
+  /**
+   * Return a string representing the kind of this `Triangle`
+   * @returns {string} one of `"equilateral"`, `"isosceles"`, or `"scalene"`
+   * representing this `Triangle`'s kind
+   */
+  kind() {
+    if (this.sortedSides.every((side) => side === this.sortedSides[2])) {
+      return "equilateral";
+    }
+
+    if (
+      this.sortedSides[0] === this.sortedSides[1] ||
+      this.sortedSides[1] === this.sortedSides[2]
+    ) {
+      return "isosceles";
+    }
+
+    return "scalene";
+  }
 }
 
 module.exports = Triangle;
