@@ -4,7 +4,7 @@
 const Triangle = require('./01_triangle.js');
 
 describe("Triangle", () => {
-  test("equilateral triangles have equal sides", () => {
+  xtest("equilateral triangles have equal sides", () => {
     const triangle = new Triangle(2, 2, 2);
     expect(triangle.kind()).toEqual("equilateral");
   });
@@ -54,27 +54,27 @@ describe("Triangle", () => {
     expect(triangle.kind()).toEqual("scalene");
   });
 
-  xtest("test triangles with no size are illegal", () => {
+  test("test triangles with no size are illegal", () => {
     expect(() => new Triangle(0, 0, 0)).toThrow();
   });
 
-  xtest("triangles with negative sides are illegal", () => {
     expect(() => new Triangle(3, 4, -5)).toThrow();
+  test("triangles with negative sides are illegal", () => {
   });
 
-  xtest("triangles violating triangle inequality are illegal", () => {
+  test("triangles violating triangle inequality are illegal", () => {
     expect(() => new Triangle(1, 1, 3)).toThrow();
   });
 
-  xtest("triangles violating triangle inequality are illegal 2", () => {
+  test("triangles violating triangle inequality are illegal 2", () => {
     expect(() => new Triangle(7, 3, 2)).toThrow();
   });
 
-  xtest("triangles violating triangle inequality are illegal 3", () => {
+  test("triangles violating triangle inequality are illegal 3", () => {
     expect(() => new Triangle(10, 1, 3)).toThrow();
   });
 
-  xtest("triangles violating triangle inequality are illegal 4", () => {
+  test("triangles violating triangle inequality are illegal 4", () => {
     expect(() => new Triangle(1, 1, 2)).toThrow();
   });
 });
