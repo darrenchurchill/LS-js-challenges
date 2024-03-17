@@ -56,14 +56,22 @@ describe("Triangle", () => {
 
   test("test triangles with no size are illegal", () => {
     expect(() => new Triangle(0, 0, 0)).toThrow();
+    expect(() => new Triangle(0, 1, 1)).toThrow();
+    expect(() => new Triangle(1, 0, 1)).toThrow();
+    expect(() => new Triangle(1, 1, 0)).toThrow();
   });
 
-    expect(() => new Triangle(3, 4, -5)).toThrow();
   test("triangles with negative sides are illegal", () => {
+    expect(() => new Triangle(-3, -4, -5)).toThrow();
+    expect(() => new Triangle(3, -4, -5)).toThrow();
+    expect(() => new Triangle(-3, 4, -5)).toThrow();
+    expect(() => new Triangle(-3, -4, 5)).toThrow();
   });
 
   test("triangles violating triangle inequality are illegal", () => {
     expect(() => new Triangle(1, 1, 3)).toThrow();
+    expect(() => new Triangle(1, 3, 1)).toThrow();
+    expect(() => new Triangle(3, 1, 1)).toThrow();
   });
 
   test("triangles violating triangle inequality are illegal 2", () => {
@@ -76,5 +84,7 @@ describe("Triangle", () => {
 
   test("triangles violating triangle inequality are illegal 4", () => {
     expect(() => new Triangle(1, 1, 2)).toThrow();
+    expect(() => new Triangle(1, 2, 1)).toThrow();
+    expect(() => new Triangle(2, 1, 1)).toThrow();
   });
 });
