@@ -40,40 +40,17 @@ class RomanNumeral {
    * Return this `RomanNumeral`'s Roman numeral string representation.
    * @returns {string} the Roman numeral
    */
-  // eslint-disable-next-line max-lines-per-function
   toRoman() {
     let result = "";
     let remainder = this.number;
-    let curDigitVal = this.#leftDigitValue(remainder);
-    let curModNumeral = [null, ""]; // the numeral performing additive modification
-    let prevNumeralVal = null;
 
     RomanNumeral.VALUES.forEach(([numeralVal, numeral]) => {
-      if (curModNumeral[0] === null) {
-        curModNumeral = [numeralVal, numeral];
-      } else if (numeral.length > 1) {
-        curModNumeral = [prevNumeralVal - numeralVal, numeral[0]];
-      }
-
-      if (numeralVal <= curDigitVal) {
-        let numTimes =
-          numeralVal === curDigitVal
-            ? 0
-            : (curDigitVal - numeralVal) / curModNumeral[0];
-        result += numeral + curModNumeral[1].repeat(numTimes);
-        remainder -= curDigitVal;
-        curDigitVal = this.#leftDigitValue(remainder);
-      }
-      prevNumeralVal = numeralVal;
+      let numTimes = Math.floor(remainder / numeralVal);
+      remainder %= numeralVal;
+      result += numeral.repeat(numTimes);
     });
 
     return result;
-  }
-
-  #leftDigitValue(number) {
-    let placeVal = 10 ** Math.floor(Math.log10(number));
-    let digit = Math.floor(number / placeVal);
-    return placeVal * digit;
   }
 }
 
