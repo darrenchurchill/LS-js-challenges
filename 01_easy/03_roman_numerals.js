@@ -10,6 +10,23 @@
 "use strict";
 
 class RomanNumeral {
+  /** @type {Array.<Array.<number, string>} */
+  static VALUES = [
+    [1000, "M"],
+    [900 , "CM"],
+    [500 , "D"],
+    [400 , "CD"],
+    [100 , "C"],
+    [90  , "XC"],
+    [50  , "L"],
+    [40  , "XL"],
+    [10  , "X"],
+    [9   , "IX"],
+    [5   , "V"],
+    [4   , "IV"],
+    [1   , "I"],
+  ];
+
   /**
    * Given an integer `number`, create a new `RomanNumeral` instance.
    * @param {number} number the integer number to create this `RomanNumeral`
@@ -21,52 +38,42 @@ class RomanNumeral {
 
   /**
    * Return this `RomanNumeral`'s Roman numeral string representation.
-   * @param {number} [number=this.number] the current number for recursive calls
-   * @returns
+   * @returns {string} the Roman numeral
    */
-  toRoman(number = this.number) {
+  // eslint-disable-next-line max-lines-per-function
+  toRoman() {
     let result = "";
-    if (number === 0) return result;
+    let remainder = this.number;
+    let curDigitVal = this.#leftDigitValue(remainder);
+    let curModNumeral = [null, ""]; // the numeral performing additive modification
+    let prevNumeralVal = null;
 
-    let placeVal = 10 ** Math.floor(Math.log10(number));
-    let digit = Math.floor(number / placeVal);
-    let digitVal = placeVal * digit;
+    RomanNumeral.VALUES.forEach(([numeralVal, numeral]) => {
+      if (curModNumeral[0] === null) {
+        curModNumeral = [numeralVal, numeral];
+      } else if (numeral.length > 1) {
+        curModNumeral = [prevNumeralVal - numeralVal, numeral[0]];
+      }
 
-    let mainNumeral = this.#getMainNumeral(number);
-    let modNumeral = this.#getModNumeral(number);
+      if (numeralVal <= curDigitVal) {
+        let numTimes =
+          numeralVal === curDigitVal
+            ? 0
+            : (curDigitVal - numeralVal) / curModNumeral[0];
+        result += numeral + curModNumeral[1].repeat(numTimes);
+        remainder -= curDigitVal;
+        curDigitVal = this.#leftDigitValue(remainder);
+      }
+      prevNumeralVal = numeralVal;
+    });
 
-    if (digit < 4) result = modNumeral.repeat(digit);
-    else if (digit === 4 || digit === 9) result = modNumeral + mainNumeral;
-    else result = mainNumeral + modNumeral.repeat(digit - 5);
-
-    return result + this.toRoman(number - digitVal);
+    return result;
   }
 
-  #getModNumeral(number) {
-    let modNumerals = ["I", "X", "C", "M"];
-    return modNumerals[Math.floor(Math.log10(number))];
-  }
-
-  #getMainNumeral(number) {
+  #leftDigitValue(number) {
     let placeVal = 10 ** Math.floor(Math.log10(number));
     let digit = Math.floor(number / placeVal);
-
-    if (digit >= 4 && digit < 9) {
-      switch (placeVal) {
-        case 1: return "V";
-        case 10: return "L";
-        case 100: return "D";
-      }
-    }
-    if (digit === 9) {
-      switch (placeVal) {
-        case 1: return "X";
-        case 10: return "C";
-        case 100: return "M";
-      }
-    }
-    // else: digit < 4
-    return "";
+    return placeVal * digit;
   }
 }
 
