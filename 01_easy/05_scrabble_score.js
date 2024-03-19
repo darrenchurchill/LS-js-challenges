@@ -10,15 +10,16 @@
 "use strict";
 
 class Scrabble {
-  /** @type {Map.<RegExp, number>} */
-  static SCORES = new Map()
-    .set(/[aeioulnrst]/gi, 1)
-    .set(/[dg]/gi        , 2)
-    .set(/[bcmp]/gi      , 3)
-    .set(/[fhvwy]/gi     , 4)
-    .set(/[k]/gi         , 5)
-    .set(/[jx]/gi        , 8)
-    .set(/[qz]/gi        , 10);
+  /** @type {Array.<Array.<RegExp, number>>} */
+  static SCORES = [
+    [/[aeioulnrst]/gi, 1],
+    [/[dg]/gi        , 2],
+    [/[bcmp]/gi      , 3],
+    [/[fhvwy]/gi     , 4],
+    [/[k]/gi         , 5],
+    [/[jx]/gi        , 8],
+    [/[qz]/gi        , 10],
+  ];
 
   /**
    * Create a new `Scrabble` instance.
@@ -46,7 +47,7 @@ class Scrabble {
       return result;
     }
 
-    Scrabble.SCORES.forEach((score, regex) => {
+    Scrabble.SCORES.forEach(([regex, score]) => {
       result += [...this.word.matchAll(regex)].reduce((sum) => sum + score, 0);
     });
 
