@@ -48,7 +48,7 @@ class PerfectNumber {
     let divisor = 1;
     let result = 0;
 
-    while (divisor < number) {
+    while (divisor <= number / 2) {
       if (number % divisor === 0) result += divisor;
       divisor += 1;
     }
