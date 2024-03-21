@@ -28,9 +28,13 @@ class Octal {
     let result = 0;
     if (this.num.match(/[^0-7]/)) return result;
 
-    for (let i = 0; i < this.num.length; i += 1) {
-      result += Number(this.num[i]) * (8 ** (this.num.length - 1 - i));
-    }
+    this.num
+      .split("")
+      .reverse()
+      .map((char) => Number(char))
+      .forEach((num, index) => {
+        result += num * (8 ** index);
+      });
 
     return result;
   }
