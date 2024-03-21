@@ -25,18 +25,13 @@ class Octal {
    * @returns {number} the decimal conversion of this octal number
    */
   toDecimal() {
-    let result = 0;
-    if (this.num.match(/[^0-7]/)) return result;
+    if (this.num.match(/[^0-7]/)) return 0;
 
-    this.num
+    return this.num
       .split("")
       .reverse()
       .map((char) => Number(char))
-      .forEach((num, index) => {
-        result += num * (8 ** index);
-      });
-
-    return result;
+      .reduce((sum, num, index) => sum + (num * (8 ** index)), 0);
   }
 }
 
