@@ -27,15 +27,15 @@ class SumOfMultiples {
    * @returns {number} the calculated sum of multiples
    */
   to(targetValue) {
-    let result = new Set();
+    let result = 0;
 
     for (let count = 0; count < targetValue; count += 1) {
-      this.divisors.forEach((divisor) => {
-        if (count % divisor === 0) result.add(count);
-      });
+      if (this.divisors.some((divisor) => count % divisor === 0)) {
+        result += count;
+      }
     }
 
-    return [...result].reduce((sum, multiple) => sum + multiple, 0);
+    return result;
   }
 
   /**
