@@ -35,7 +35,19 @@ class Meetup {
    * @param {number} monthIndex the 1-based month index
    */
   constructor(year, monthIndex) {
-    this.date = new Date(year, monthIndex - 1);
+    this.year = year;
+    this.month = monthIndex - 1;
+    this.#reset();
+  }
+
+  #reset() {
+    this.date = new Date(this.year, this.month);
+  }
+
+  #returnAndReset(result) {
+    if (result !== null) result = new Date(this.date);
+    this.#reset();
+    return result;
   }
 
   /**
@@ -57,13 +69,14 @@ class Meetup {
     let day = Meetup.DAYS_OF_WEEK.indexOf(dayOfWeek);
 
     if (descriptor === "teenth") return this.#teenth(day);
+    if (descriptor === "last") return this.#findLast(day);
 
     return this.#find(day, descriptor);
   }
 
   #find(day, descriptor) {
     while (this.date.getDay() !== day) {
-      this.date.setDate(this.date.getDate() + 1);
+      this.#incrementDate(1);
     }
 
     let curCount = 0;
@@ -72,24 +85,40 @@ class Meetup {
 
     while (this.date.getMonth() === month) {
       curCount += 1;
-      if (curCount === count) return new Date(this.date);
-      this.date.setDate(this.date.getDate() + 7);
+      if (curCount === count) return this.#returnAndReset();
+      this.#incrementDate(7);
     }
 
-    if (descriptor === "last") {
-      this.date.setDate(this.date.getDate() - 7);
-      return new Date(this.date);
+    return this.#returnAndReset(null);
+  }
+
+  #findLast(day) {
+    // Set date to the last day of the month.
+    // The Date object handles wrap-around for you.
+    this.#incrementMonth(1);
+    this.#incrementDate(-1);
+
+    while (this.date.getDay() !== day) {
+      this.#incrementDate(-1);
     }
 
-    return null;
+    return this.#returnAndReset();
   }
 
   #teenth(day) {
     this.date.setDate(Meetup.DESCRIPTORS.get("teenth"));
     while (this.date.getDay() !== day) {
-      this.date.setDate(this.date.getDate() + 1);
+      this.#incrementDate(1);
     }
-    return new Date(this.date);
+    return this.#returnAndReset();
+  }
+
+  #incrementDate(numDays) {
+    this.date.setDate(this.date.getDate() + numDays);
+  }
+
+  #incrementMonth(numMonths) {
+    this.date.setMonth(this.date.getMonth() + numMonths);
   }
 }
 
