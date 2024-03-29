@@ -84,7 +84,7 @@ class CustomSet {
    * @returns {boolean} true if this set is disjoint with the other set
    */
   isDisjoint(otherSet) {
-    return this.toArray().every((element) => !otherSet.contains(element));
+    return this.every((element) => !otherSet.contains(element));
   }
 
   /**
@@ -96,7 +96,7 @@ class CustomSet {
   isSame(otherSet) {
     return (
       this.size() === otherSet.size() &&
-      this.toArray().every((element) => otherSet.contains(element))
+      this.every((element) => otherSet.contains(element))
     );
   }
 
@@ -108,9 +108,7 @@ class CustomSet {
    * the other set
    */
   intersection(otherSet) {
-    return new CustomSet(
-      this.toArray().filter((element) => otherSet.contains(element))
-    );
+    return this.filter((element) => otherSet.contains(element));
   }
 
   /**
@@ -121,9 +119,29 @@ class CustomSet {
    * other set
    */
   difference(otherSet) {
-    return new CustomSet(
-      this.toArray().filter((element) => !otherSet.contains(element))
-    );
+    return this.filter((element) => !otherSet.contains(element));
+  }
+
+  /**
+   * Given a callback function to execute for every element in this set, return
+   * true if each element in this set passes the test the callback implements.
+   * @param {Function} callback the callback to execute
+   * @returns {boolean} true if every execution of the provided callback returns
+   * true
+   */
+  every(callback) {
+    return this.toArray().every(callback);
+  }
+
+  /**
+   * Given a callback function to execute for every element in this set, return
+   * a new set containing only the elements that passed the callback's test.
+   * @param {Function} callback the callback to execute
+   * @returns {CustomSet} the set containing only the elements passing the
+   * callback's filtering test
+   */
+  filter(callback) {
+    return new CustomSet(this.toArray().filter(callback));
   }
 
   /**
