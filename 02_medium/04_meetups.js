@@ -20,14 +20,14 @@ class Meetup {
     "saturday",
   ];
 
-  static DESCRIPTORS = new Map()
+  static DESCRIPTOR_START_DATES = new Map()
     .set("first", 1)
-    .set("second", 2)
-    .set("third", 3)
-    .set("fourth", 4)
-    .set("fifth", 5)
-    .set("last", -1)
-    .set("teenth", 13);
+    .set("second", 8)
+    .set("third", 15)
+    .set("fourth", 22)
+    .set("fifth", 29)
+    .set("teenth", 13)
+    .set("last", null);
 
   /**
    * Given a year and a month index, create a new `Meetup` instance.
@@ -64,60 +64,35 @@ class Meetup {
    * month and year
    */
   day(dayOfWeek, descriptor) {
-    dayOfWeek = dayOfWeek.toLowerCase();
-    descriptor = descriptor.toLowerCase();
-    let day = Meetup.DAYS_OF_WEEK.indexOf(dayOfWeek);
+    let day = Meetup.DAYS_OF_WEEK.indexOf(dayOfWeek.toLowerCase());
+    this.#setStartDate(descriptor.toLowerCase());
 
-    if (descriptor === "teenth") return this.#teenth(day);
-    if (descriptor === "last") return this.#findLast(day);
-
-    return this.#find(day, descriptor);
-  }
-
-  #find(day, descriptor) {
-    while (this.date.getDay() !== day) {
-      this.#incrementDate(1);
-    }
-
-    let curCount = 0;
-    let count = Meetup.DESCRIPTORS.get(descriptor);
-    let month = this.date.getMonth();
-
-    while (this.date.getMonth() === month) {
-      curCount += 1;
-      if (curCount === count) return this.#returnAndReset();
-      this.#incrementDate(7);
+    for (let _ = 0; _ < 7; _ += 1) {
+      if (this.date.getMonth() !== this.month) {
+        return this.#returnAndReset(null);
+      }
+      if (this.date.getDay() === day) return this.#returnAndReset();
+      this.#incrementDate();
     }
 
     return this.#returnAndReset(null);
   }
 
-  #findLast(day) {
-    // Set date to the last day of the month.
-    // The Date object handles wrap-around for you.
-    this.#incrementMonth(1);
-    this.#incrementDate(-1);
-
-    while (this.date.getDay() !== day) {
-      this.#incrementDate(-1);
+  #setStartDate(descriptor) {
+    let date = Meetup.DESCRIPTOR_START_DATES.get(descriptor);
+    if (date === null) {
+      this.#incrementMonth();
+      this.#incrementDate(-7);
+      return;
     }
-
-    return this.#returnAndReset();
+    this.date.setDate(date);
   }
 
-  #teenth(day) {
-    this.date.setDate(Meetup.DESCRIPTORS.get("teenth"));
-    while (this.date.getDay() !== day) {
-      this.#incrementDate(1);
-    }
-    return this.#returnAndReset();
-  }
-
-  #incrementDate(numDays) {
+  #incrementDate(numDays = 1) {
     this.date.setDate(this.date.getDate() + numDays);
   }
 
-  #incrementMonth(numMonths) {
+  #incrementMonth(numMonths = 1) {
     this.date.setMonth(this.date.getMonth() + numMonths);
   }
 }
